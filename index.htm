@@ -3,56 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DOCX to HTML Converter</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <title>geosummaries</title>
 </head>
 <body>
-    <h1>Convert DOCX to HTML</h1>
-    <div id="links">
-        <a href="#" class="convert-link" data-url="https://raw.githubusercontent.com/lszam/geof-library/main/exercises/grav_ex/grav_conceitos.docx">Convert Document 1</a>
-        <a href="#" class="convert-link" data-url="https://raw.githubusercontent.com/lszam/geof-library/main/exercises/grav_ex/grav_int_potiguar.docx">Convert Document 2</a>
+    <h1>geosumaries</h1>
+    <div>
+        <a href="#" data-url="https://https://lszam.github.io/geosum/exerc.htm">Exercícios</a>        
         <!-- links -->
-    </div>
-    <div id="output"></div>
-
-    <script>
-        document.querySelectorAll('.convert-link').forEach(link => {
-            link.addEventListener('click', function(event) {
-                event.preventDefault();
-                
-                var docUrl = event.target.getAttribute('data-url');
-                var imageBaseUrl = "https://raw.githubusercontent.com/lszam/geof-library/main/exercises/grav_ex/"; // Base URL para as imagens
-                var figSize = 600; // Largura das figuras
-                
-                axios.get(docUrl, { responseType: 'arraybuffer' })
-                    .then(response => {
-                        if (response.status !== 200) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.data;
-                    })
-                    .then(arrayBuffer => mammoth.convertToHtml({ arrayBuffer: arrayBuffer }))
-                    .then(result => {
-                        var htmlContent = result.value;
-                        htmlContent = htmlContent.replace(/\[image:(.*?)\]/g, function(match, imageName) {
-                            var imageUrl = `${imageBaseUrl}/${imageName.trim()}`;
-                            return `<img src="${imageUrl}" alt="${imageName.trim()}" style="width: ${figSize}px;">`;
-                        });
-                        displayResult(htmlContent);
-                    })
-                    .catch(handleError);
-            });
-        });
-
-        function displayResult(htmlContent) {
-            document.getElementById('output').innerHTML = htmlContent;
-        }
-
-        function handleError(err) {
-            console.error('Error:', err);
-            document.getElementById('output').innerHTML = `<p>Error: ${err.message}</p>`;
-        }
-    </script>
+    </div>      
 </body>
 </html>
