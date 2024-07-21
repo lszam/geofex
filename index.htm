@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DOCX to HTML Converter</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
     <h1>Convert DOCX to HTML</h1>
     <div id="links">
         <a href="#" class="convert-link" data-url="https://api.github.com/repos/lszam/geof-library/contents/exercises/grav_conceitos.docx">Convert Document 1</a>
-        <a href="#" class="convert-link" data-url="https://api.github.com/repos/lszam/geof-library/contents/exercises/grav_interpretacao_01.docx">Convert Document 2</a>        
+        <a href="#" class="convert-link" data-url="https://api.github.com/repos/lszam/geof-library/contents/exercises/grav_interpretacao_01.docx">Convert Document 2</a>
+        <!-- Adicione mais links conforme necessário -->
     </div>
     <div id="output"></div>
 
@@ -21,12 +23,12 @@
                 
                 var githubApiUrl = event.target.getAttribute('data-url');
                 
-                fetch(githubApiUrl)
+                axios.get(githubApiUrl)
                     .then(response => {
-                        if (!response.ok) {
+                        if (response.status !== 200) {
                             throw new Error(`HTTP error! status: ${response.status}`);
                         }
-                        return response.json();
+                        return response.data;
                     })
                     .then(data => {
                         var content = data.content.replace(/\n/g, ''); // Remove quebras de linha
