@@ -11,7 +11,7 @@
     <h1>Convert DOCX to HTML</h1>
     <div id="links">
         <a href="#" class="convert-link" data-url="https://api.github.com/repos/lszam/geof-library/contents/exercises/grav_ex/grav_conceitos.docx">Convert Document 1</a>
-        <a href="#" class="convert-link" data-url="https://api.github.com/repos/lszam/geof-library/contents/exercises/grav_ex/grav_int_potiguar.docx">Atividade 1</a>
+        <a href="#" class="convert-link" data-url="https://api.github.com/repos/lszam/geof-library/contents/exercises/grav_ex/grav_int_potiguar.docx">Convert Document 2</a>
         <!-- Adicione mais links conforme necessário -->
     </div>
     <div id="output"></div>
@@ -45,29 +45,35 @@
                     .then(arrayBuffer => mammoth.convertToHtml({arrayBuffer: arrayBuffer}))
                     .then(result => {
                         var htmlContent = result.value;
-                        // Substituir tags de imagem pelas URLs corretas e definir largura
+                        var imagePromises = [];
                         htmlContent = htmlContent.replace(/\[image:(.*?)\]/g, function(match, imageName) {
                             var imageUrl = `${imageBaseUrl}/${imageName.trim()}`;
-                            return axios.get(imageUrl)
+                            var imageTagPromise = axios.get(imageUrl)
                                 .then(response => {
-                                    if (response.status !== 200) {
-                                        throw new Error(`HTTP error! status: ${response.status}`);
+                                    if (response.status === 200) {
+                                        return `<img src="${imageUrl}" alt="${imageName.trim()}" style="width: ${figSize}px;">`;
+                                    } else {
+                                        return `<p>Imagem não encontrada: ${imageName.trim()}</p>`;
                                     }
-                                    return `<img src="${imageUrl}" alt="${imageName.trim()}" style="width: ${figSize}px;">`;
                                 })
                                 .catch(() => `<p>Imagem não encontrada: ${imageName.trim()}</p>`);
+                            imagePromises.push(imageTagPromise);
+                            return imageTagPromise;
                         });
-                        return htmlContent;
+
+                        Promise.all(imagePromises).then(resolvedImages => {
+                            resolvedImages.forEach((resolvedImage, index) => {
+                                htmlContent = htmlContent.replace(imagePromises[index], resolvedImage);
+                            });
+                            displayResult(htmlContent);
+                        });
                     })
-                    .then(displayResult)
                     .catch(handleError);
             });
         });
 
         function displayResult(htmlContent) {
-            Promise.all(htmlContent).then(contents => {
-                document.getElementById('output').innerHTML = contents.join('');
-            });
+            document.getElementById('output').innerHTML = htmlContent;
         }
 
         function handleError(err) {
