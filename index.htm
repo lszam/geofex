@@ -10,8 +10,8 @@
 <body>
     <h1>Convert DOCX to HTML</h1>
     <div id="links">
-        <a href="#" class="convert-link" data-url="https://api.github.com/repos/lszam/geof-library/contents/exercises/grav_ex/grav_conceitos.docx">Convert Document 1</a>
-        <a href="#" class="convert-link" data-url="https://api.github.com/repos/lszam/geof-library/contents/exercises/grav_ex/grav_int_potiguar.docx">Convert Document 2</a>
+        <a href="#" class="convert-link" data-url="https://raw.githubusercontent.com/lszam/geof-library/main/exercises/grav_ex/grav_conceitos.docx">Convert Document 1</a>
+        <a href="#" class="convert-link" data-url="https://raw.githubusercontent.com/lszam/geof-library/main/exercises/grav_ex/grav_int_potiguar.docx">Convert Document 2</a>
         <!-- Adicione mais links conforme necessário -->
     </div>
     <div id="output"></div>
@@ -21,52 +21,25 @@
             link.addEventListener('click', function(event) {
                 event.preventDefault();
                 
-                var githubApiUrl = event.target.getAttribute('data-url');
-                var imageBaseUrl = "https://api.github.com/repos/lszam/geof-library/contents/assets/img/ex"; // Base URL para as imagens
+                var docUrl = event.target.getAttribute('data-url');
+                var imageBaseUrl = "https://raw.githubusercontent.com/lszam/geof-library/main/assets/img/ex"; // Base URL para as imagens
                 var figSize = 600; // Largura das figuras
                 
-                axios.get(githubApiUrl)
+                axios.get(docUrl, { responseType: 'arraybuffer' })
                     .then(response => {
                         if (response.status !== 200) {
                             throw new Error(`HTTP error! status: ${response.status}`);
                         }
                         return response.data;
                     })
-                    .then(data => {
-                        var content = data.content.replace(/\n/g, ''); // Remove quebras de linha
-                        var binaryString = atob(content); // Decodifica base64
-                        var arrayBuffer = new ArrayBuffer(binaryString.length);
-                        var uint8Array = new Uint8Array(arrayBuffer);
-                        for (var i = 0; i < binaryString.length; i++) {
-                            uint8Array[i] = binaryString.charCodeAt(i);
-                        }
-                        return arrayBuffer;
-                    })
-                    .then(arrayBuffer => mammoth.convertToHtml({arrayBuffer: arrayBuffer}))
+                    .then(arrayBuffer => mammoth.convertToHtml({ arrayBuffer: arrayBuffer }))
                     .then(result => {
                         var htmlContent = result.value;
-                        var imagePromises = [];
                         htmlContent = htmlContent.replace(/\[image:(.*?)\]/g, function(match, imageName) {
                             var imageUrl = `${imageBaseUrl}/${imageName.trim()}`;
-                            var imageTagPromise = axios.get(imageUrl)
-                                .then(response => {
-                                    if (response.status === 200) {
-                                        return `<img src="${imageUrl}" alt="${imageName.trim()}" style="width: ${figSize}px;">`;
-                                    } else {
-                                        return `<p>Imagem não encontrada: ${imageName.trim()}</p>`;
-                                    }
-                                })
-                                .catch(() => `<p>Imagem não encontrada: ${imageName.trim()}</p>`);
-                            imagePromises.push(imageTagPromise);
-                            return imageTagPromise;
+                            return `<img src="${imageUrl}" alt="${imageName.trim()}" style="width: ${figSize}px;">`;
                         });
-
-                        Promise.all(imagePromises).then(resolvedImages => {
-                            resolvedImages.forEach((resolvedImage, index) => {
-                                htmlContent = htmlContent.replace(imagePromises[index], resolvedImage);
-                            });
-                            displayResult(htmlContent);
-                        });
+                        displayResult(htmlContent);
                     })
                     .catch(handleError);
             });
@@ -78,6 +51,7 @@
 
         function handleError(err) {
             console.error('Error:', err);
+            document.getElementById('output').innerHTML = `<p>Error: ${err.message}</p>`;
         }
     </script>
 </body>
