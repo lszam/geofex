@@ -1,0 +1,85 @@
+html {
+  font-size: 65%;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+/* dimensoes e unidades */
+/* escala https://typescale.com/ Major Third em PX*/
+p {
+  font-size: medium;
+  margin-bottom: 0.39rem;
+}
+
+a {
+  font-size: medium;
+  text-decoration: none;
+  color: #404040;
+}
+
+ul {
+  font-size: medium;
+}
+h1 {
+  font-size: 2.5rem;
+  font-weight: 800px;
+  margin-top: 0.39rem;
+  margin-bottom: 0.39rem;
+  /*padding: 1.02rem;*/
+}
+h2 {
+  font-size: 2.1rem;
+  font-weight: 700;
+  padding: 0.39rem;
+}
+h3 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  /*margin-top: 0.21rem;*/
+  /*margin-bottom: 0.39rem;*/
+  padding: 0.39rem;
+}
+h4 {
+  font-size: 1.02rem;
+  font-weight: 600;
+  padding: 0.39rem;
+}
+h5 {
+  font-size: 1.02rem;
+  font-weight: 600;
+  padding: 0.39rem;
+}
+
+/*------------------*/
+
+.botao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #404040;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: center;
+  border-radius: 2.1rem;
+  background-color: rgb(138, 175, 239);
+  padding: 1.02rem 2.1rem;
+  border-bottom: solid 0.2rem #404040;
+  border-right: solid 0.2rem #404040;
+  border-top: solid 0.2rem #404040;
+  border-left: solid 0.2rem #404040;
+  box-shadow: 0 0.4rem 0.4rem 0.15rem rgba(0, 0, 0, 0.2);
+  transition: all ease-in 0.15s;
+}
+.botao:hover {
+  color: white;
+  background-color: gray;
+  border-bottom: none;
+  border-right: none;
+  border-top: solid 0.2rem white;
+  border-left: solid 0.2rem white;
+  box-shadow: none;
+}

@@ -1,0 +1,47 @@
+/*Exercicios*/
+.exerc-container-geral {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+}
+
+.exerc-coluna-lateral {
+  display: flex;
+  flex-flow: column;
+  width: 25%;
+  padding: 1.02rem;
+}
+
+.exerc-coluna-lateral_item {
+  display: inline;
+  flex-wrap: wrap;
+  gap: 1.02rem;
+  a {
+    &:hover,
+    &:active {
+      color: rgb(0, 40, 108);
+      font-weight: 600;
+      transition: all ease-in 0.2s;
+    }
+  }
+  .pdf {
+    margin-left: 0.39rem;
+  }
+}
+
+.exerc-doc-titulos {
+  display: flex;
+  flex-flow: column;
+  gap: 1.2rem;
+  padding: 1.02rem 2.5rem;
+  background-color: rgb(160, 188, 255);
+}
+
+.exerc-doc-corpo {
+  display: flex;
+  flex-flow: column;
+  position: relative;
+  padding-left: 1.2rem;
+  width: 70%;
+  text-align: justify;
+}
