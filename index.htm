@@ -12,7 +12,7 @@
     <div id="links">
         <a href="#" class="convert-link" data-url="https://raw.githubusercontent.com/lszam/geof-library/main/exercises/grav_ex/grav_conceitos.docx">Convert Document 1</a>
         <a href="#" class="convert-link" data-url="https://raw.githubusercontent.com/lszam/geof-library/main/exercises/grav_ex/grav_int_potiguar.docx">Convert Document 2</a>
-        <!-- Adicione mais links conforme necessário -->
+        <!-- links -->
     </div>
     <div id="output"></div>
 
@@ -22,7 +22,7 @@
                 event.preventDefault();
                 
                 var docUrl = event.target.getAttribute('data-url');
-                var imageBaseUrl = "https://raw.githubusercontent.com/lszam/geof-library/main/assets/img/ex"; // Base URL para as imagens
+                var imageBaseUrl = "https://raw.githubusercontent.com/lszam/geof-library/main/exercises/grav_ex/"; // Base URL para as imagens
                 var figSize = 600; // Largura das figuras
                 
                 axios.get(docUrl, { responseType: 'arraybuffer' })
