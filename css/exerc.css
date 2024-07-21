@@ -41,7 +41,7 @@
   display: flex;
   flex-flow: column;
   position: relative;
-  padding-left: 1.2rem;
+  padding: 1.2rem 1.02rem;
   width: 70%;
   text-align: justify;
   background-color: white;
