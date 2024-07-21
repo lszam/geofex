@@ -11,12 +11,8 @@
     <h1>Convert DOCX to HTML</h1>
     <div id="links">
         <a href="#" class="convert-link" data-url="https://api.github.com/repos/lszam/geof-library/contents/exercises/grav_ex/grav_conceitos.docx">Convert Document 1</a>
-        <a href="#" class="convert-link" data-url="https://api.github.com/repos/lszam/geof-library/contents/exercises/grav_ex/grav_int_potiguar.docx">Convert Document 2</a>
+        <a href="#" class="convert-link" data-url="https://api.github.com/repos/lszam/geof-library/contents/exercises/grav_ex/grav_int_potiguar.docx">Atividade 1</a>
         <!-- Adicione mais links conforme necessário -->
-    </div>
-    <div>
-        <label for="fig-size">Figure Width (px):</label>
-        <input type="number" id="fig-size" value="600">
     </div>
     <div id="output"></div>
 
@@ -26,8 +22,8 @@
                 event.preventDefault();
                 
                 var githubApiUrl = event.target.getAttribute('data-url');
-                var imageBaseUrl = "https://raw.githubusercontent.com/lszam/geof-library/main/assets/img/ex"; // Base URL para as imagens
-                var figSize = document.getElementById('fig-size').value; // Largura das figuras
+                var imageBaseUrl = "https://api.github.com/repos/lszam/geof-library/contents/assets/img/ex"; // Base URL para as imagens
+                var figSize = 600; // Largura das figuras
                 
                 axios.get(githubApiUrl)
                     .then(response => {
@@ -51,16 +47,27 @@
                         var htmlContent = result.value;
                         // Substituir tags de imagem pelas URLs corretas e definir largura
                         htmlContent = htmlContent.replace(/\[image:(.*?)\]/g, function(match, imageName) {
-                            return `<img src="${imageBaseUrl}${imageName.trim()}" alt="${imageName.trim()}" style="width: ${figSize}px;">`;
+                            var imageUrl = `${imageBaseUrl}/${imageName.trim()}`;
+                            return axios.get(imageUrl)
+                                .then(response => {
+                                    if (response.status !== 200) {
+                                        throw new Error(`HTTP error! status: ${response.status}`);
+                                    }
+                                    return `<img src="${imageUrl}" alt="${imageName.trim()}" style="width: ${figSize}px;">`;
+                                })
+                                .catch(() => `<p>Imagem não encontrada: ${imageName.trim()}</p>`);
                         });
-                        displayResult(htmlContent);
+                        return htmlContent;
                     })
+                    .then(displayResult)
                     .catch(handleError);
             });
         });
 
         function displayResult(htmlContent) {
-            document.getElementById('output').innerHTML = htmlContent;
+            Promise.all(htmlContent).then(contents => {
+                document.getElementById('output').innerHTML = contents.join('');
+            });
         }
 
         function handleError(err) {
