@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>geosummaries</title>
+    <title>DOCX to HTML Converter</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
 </head>
 <body>
-    <h1>Teste com documentos</h1>
+    <h1>Convert DOCX to HTML</h1>
     <div id="links">
-        <a href="#" class="convert-link" data-url="https://api.github.com/repos/lszam/geof-library/contents/exercises/grav_conceitos.docx">Gravimetria_Resumão</a>
-        <a href="#" class="convert-link" data-url="https://api.github.com/repos/lszam/geof-library/contents/exercises/grav_interpretacao_01.docx">Gravimetria_Atividade1</a>
-        <!-- links -->
+        <a href="#" class="convert-link" data-url="https://api.github.com/repos/lszam/geof-library/contents/exercises/grav_conceitos.docx">Convert Document 1</a>
+        <a href="#" class="convert-link" data-url="https://api.github.com/repos/lszam/geof-library/contents/exercises/grav_interpretacao_01.docx">Convert Document 2</a>        
     </div>
     <div id="output"></div>
 
@@ -38,7 +37,13 @@
                         }
                         return arrayBuffer.buffer;
                     })
-                    .then(arrayBuffer => mammoth.convertToHtml({arrayBuffer: arrayBuffer}))
+                    .then(arrayBuffer => mammoth.convertToHtml({arrayBuffer: arrayBuffer, convertImage: mammoth.images.inline(function(element) {
+                        return element.read("base64").then(function(imageBuffer) {
+                            return {
+                                src: "data:" + element.contentType + ";base64," + imageBuffer
+                            };
+                        });
+                    })}))
                     .then(displayResult)
                     .catch(handleError);
             });
