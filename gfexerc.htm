@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/exerc.css" />
+    <title>Exercícios</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div class="exerc-container-geral">
+      <div class="exerc-coluna-lateral">
+        <h1>Material de Geofísica</h1>
+        <h2>Exercícios</h2>
+        <div class="exerc-doc-titulos" id="links">
+          <div class="exerc-coluna-lateral_item">
+            <a
+              href="#"
+              class="convert-link"
+              data-url="https://raw.githubusercontent.com/lszam/geof-library/main/exercises/grav-ex_conceitos.docx"
+              >Gravimetria - Atividade de conceitos<a
+                class="pdf"
+                href="https://raw.githubusercontent.com/lszam/geof-library/main/exercises/grav-ex_conceitos.pdf"
+                >[pdf]</a
+              ></a
+            >
+          </div>
+
+          <div class="exerc-coluna-lateral_item">
+            <a
+              href="#"
+              class="convert-link"
+              data-url="https://raw.githubusercontent.com/lszam/geof-library/main/exercises/grav_int_potiguar.docx"
+              >Gravimetria - Atividade Potiguar</a
+            >
+          </div>
+
+          <div class="exerc-coluna-lateral_item">
+            <a
+              href="#"
+              class="convert-link"
+              data-url="https://raw.githubusercontent.com/lszam/geof-library/main/exercises/mag-ex_proc_aero_prsc.docx"
+              >Magnetometria - Atividade Dados Aeromag</a
+            >
+          </div>
+          <!-- links -->
+        </div>
+      </div>
+
+      <div class="exerc-doc-corpo" id="output"></div>
+    </div>
+
+    <script>
+      document.querySelectorAll(".convert-link").forEach((link) => {
+        link.addEventListener("click", function (event) {
+          event.preventDefault();
+
+          var docUrl = event.target.getAttribute("data-url");
+          var imageBaseUrl =
+            "https://raw.githubusercontent.com/lszam/geof-library/main/exercises/"; // Base URL para as imagens
+          var figSize = 600; // Largura das figuras
+
+          axios
+            .get(docUrl, { responseType: "arraybuffer" })
+            .then((response) => {
+              if (response.status !== 200) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.data;
+            })
+            .then((arrayBuffer) =>
+              mammoth.convertToHtml({ arrayBuffer: arrayBuffer })
+            )
+            .then((result) => {
+              var htmlContent = result.value;
+              htmlContent = htmlContent.replace(
+                /\[image:(.*?)\]/g,
+                function (match, imageName) {
+                  var imageUrl = `${imageBaseUrl}/${imageName.trim()}`;
+                  return `<img src="${imageUrl}" alt="${imageName.trim()}" style="width: ${figSize}px;">`;
+                }
+              );
+              displayResult(htmlContent);
+            })
+            .catch(handleError);
+        });
+      });
+
+      function displayResult(htmlContent) {
+        document.getElementById("output").innerHTML = htmlContent;
+      }
+
+      function handleError(err) {
+        console.error("Error:", err);
+        document.getElementById(
+          "output"
+        ).innerHTML = `<p>Error: ${err.message}</p>`;
+      }
+    </script>
+  </body>
+</html>
